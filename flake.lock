@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "firefly-iii-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1667361532,
+        "narHash": "sha256-wiar7yVq2E+p9nPnEqezifG88Hz4gxzGcAgewUUmeyY=",
+        "owner": "firefly-iii",
+        "repo": "firefly-iii",
+        "rev": "05d461fb88e35d18349e1e056adb51bf063331cd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "firefly-iii",
+        "ref": "5.7.15",
+        "repo": "firefly-iii",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1669378442,
+        "narHash": "sha256-nm+4PN0A4SnV0SzEchxrMyKPvI3Ld/aoom4PnHeHucs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0faaf0a9bb6dedb69bfd43ac06fb27fadc476c51",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "firefly-iii-src": "firefly-iii-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
