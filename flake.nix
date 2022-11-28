@@ -12,20 +12,24 @@
   };
   outputs = { self, nixpkgs, firefly-iii-src }:
     let
-      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      supportedSystems = [ "x86_64-linux" ];# "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ self.overlay ]; });
       version = builtins.substring 0 8 firefly-iii-src.lastModifiedDate;
     in
     {
       overlay = final: _: with final; {
-        firefly-iii = callPackage ./default.nix { } {
+        firefly-iii = callPackage ./pkgs { } {
           inherit version;
           src = firefly-iii-src;
         };
       };
       packages = forAllSystems (system: { inherit (nixpkgsFor.${system}) firefly-iii; });
       defaultPackage = forAllSystems (system: self.packages.${system}.firefly-iii);
-      nixosModules.firefly-iii = import ./firefly-iii-module.nix nixpkgs;
+      nixosModules.firefly-iii = import ./module/firefly-iii.nix nixpkgs;
+      checks = forAllSystems (system:
+        self.packages.${system}
+          // import ./checks/firefly-iii.nix { inherit self nixpkgs system; }
+      );
     };
 }
