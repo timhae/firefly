@@ -14,7 +14,6 @@ jobs:
       with:
         name: timhae-firefly
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix-build
-    - run: nix-shell --run "echo OK"
     - run: nix build
     - run: nix flake check
+    - run: nix-shell --run "echo OK"
