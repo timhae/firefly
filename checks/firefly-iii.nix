@@ -5,7 +5,7 @@
       name = "firefly-iii-integration-test";
       nodes.server = { ... }: {
         imports = [ self.nixosModules.firefly-iii ];
-        nixpkgs.overlays = [ self.overlay ];
+        nixpkgs.overlays = [ self.overlays.default ];
         environment = {
           etc = {
             "firefly-iii/appkey".text = "IHzCAm6JunrQzaCK+Qa3K4F3ISv/vxMqVEmUIQ2Wxdw=";
