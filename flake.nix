@@ -1,7 +1,7 @@
 {
   description = "'Firefly III' is a (self-hosted) manager for your personal finances";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
     firefly-iii-src = {
       url = "github:firefly-iii/firefly-iii/5.7.15";
       flake = false;
