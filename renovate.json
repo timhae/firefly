@@ -3,7 +3,18 @@
   "extends": [
     "config:base"
   ],
+  "enabledManagers": ["regex", "nix"],
   "nix": {
     "enabled": true
-  }
+  },
+  "regexManagers": [
+    {
+      "fileMatch": ["flake.nix"],
+      "matchStrings": [
+        "\"github:firefly-iii\/(?<depName>.*)\/(?<currentValue>.*)\";"
+      ],
+      "datasourceTemplate": "git-tags",
+      "packageNameTemplate": "https://github.com/firefly-iii/firefly-iii.git"
+    }
+  ]
 }
