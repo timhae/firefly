@@ -7,14 +7,15 @@ jobs:
   update-lockfile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v18
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+      - uses: cachix/install-nix-action@daddc62a2e67d1decb56e028c9fa68344b9b7c2a
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
       - run: nix flake update
-      - uses: peter-evans/create-pull-request@v4
+      - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           commit-message: "chore(deps): update flake inputs"
+          title: "chore(deps): update flake inputs"
           branch: flake-updates
           delete-branch: true
