@@ -211,7 +211,7 @@ in
       };
       host = mkOption {
         type = with types; nullOr str;
-        default = "null";
+        default = null;
         description = "Mail host address.";
       };
       port = mkOption {

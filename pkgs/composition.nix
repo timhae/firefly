@@ -1,8 +1,8 @@
-{ LC_ALL
-, glibcLocales
-, pkgs ? import <nixpkgs> {
+{ pkgs ? import <nixpkgs> {
     inherit system;
   }
+, glibcLocales
+, LC_ALL
 , system ? builtins.currentSystem
 , noDev ? false
 , php ? pkgs.php

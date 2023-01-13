@@ -25,10 +25,9 @@ let
   buildPackage =
     { name
     , src
-    , packages ? {}
-    , devPackages ? {}
-    , buildInputs ? []
-    , nativeBuildInputs ? []
+    , packages ? { }
+    , devPackages ? { }
+    , buildInputs ? [ ]
     , symlinkDependencies ? false
     , executable ? false
     , removeComposerArtifacts ? false
@@ -37,7 +36,8 @@ let
     , composerExtraArgs ? ""
     , unpackPhase ? "true"
     , buildPhase ? "true"
-    , ...}@args:
+    , ...
+    }@args:
 
     let
       reconstructInstalled = writeTextFile {
@@ -115,29 +115,31 @@ let
       };
 
       bundleDependencies = dependencies:
-        lib.concatMapStrings (dependencyName:
-          let
-            dependency = dependencies.${dependencyName};
-          in
-          ''
-            ${if dependency.targetDir == "" then ''
-              vendorDir="$(dirname ${dependencyName})"
-              mkdir -p "$vendorDir"
-              ${if symlinkDependencies then
-                ''ln -s "${dependency.src}" "$vendorDir/$(basename "${dependencyName}")"''
+        lib.concatMapStrings
+          (dependencyName:
+            let
+              dependency = dependencies.${dependencyName};
+            in
+            ''
+              ${if dependency.targetDir == "" then ''
+                vendorDir="$(dirname ${dependencyName})"
+                mkdir -p "$vendorDir"
+                ${if symlinkDependencies then
+                  ''ln -s "${dependency.src}" "$vendorDir/$(basename "${dependencyName}")"''
+                  else
+                  ''cp -av "${dependency.src}" "$vendorDir/$(basename "${dependencyName}")"''
+                }
+              '' else ''
+                namespaceDir="${dependencyName}/$(dirname "${dependency.targetDir}")"
+                mkdir -p "$namespaceDir"
+                ${if symlinkDependencies then
+                  ''ln -s "${dependency.src}" "$namespaceDir/$(basename "${dependency.targetDir}")"''
                 else
-                ''cp -av "${dependency.src}" "$vendorDir/$(basename "${dependencyName}")"''
-              }
-            '' else ''
-              namespaceDir="${dependencyName}/$(dirname "${dependency.targetDir}")"
-              mkdir -p "$namespaceDir"
-              ${if symlinkDependencies then
-                ''ln -s "${dependency.src}" "$namespaceDir/$(basename "${dependency.targetDir}")"''
-              else
-                ''cp -av "${dependency.src}" "$namespaceDir/$(basename "${dependency.targetDir}")"''
-              }
-            ''}
-          '') (builtins.attrNames dependencies);
+                  ''cp -av "${dependency.src}" "$namespaceDir/$(basename "${dependency.targetDir}")"''
+                }
+              ''}
+            '')
+          (builtins.attrNames dependencies);
 
       extraArgs = removeAttrs args [ "packages" "devPackages" "buildInputs" ];
     in
@@ -234,8 +236,8 @@ let
 
         # Execute post install hook
         runHook postInstall
-    '';
-  } // extraArgs);
+      '';
+    } // extraArgs);
 in
 {
   inherit filterSrc;

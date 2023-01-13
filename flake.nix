@@ -25,8 +25,7 @@
       defaultPackage = forAllSystems (system: self.packages.${system}.firefly-iii);
       nixosModules.firefly-iii = import ./module/firefly-iii.nix nixpkgs;
       checks = forAllSystems (system:
-        self.packages.${system}
-          // import ./checks/firefly-iii.nix { inherit self nixpkgs system; }
+        self.packages.${system} // import ./checks/firefly-iii.nix { inherit self nixpkgs system; }
       );
     };
 }
