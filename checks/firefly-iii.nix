@@ -21,7 +21,7 @@
         server.start()
         server.wait_for_unit("phpfpm-firefly-iii.service")
         server.wait_for_open_port(80)
-        server.succeed("curl --fail http://127.0.0.1:80/install 2> /dev/null| grep 'Firefly III'")
+        server.succeed("curl --fail http://127.0.0.1:80/install 2> /dev/null | grep 'Firefly III'")
         server.shutdown()
       '';
     };
