@@ -1,13 +1,6 @@
-{ pkgs ? import <nixpkgs> {
+{pkgs ? import <nixpkgs> {
     inherit system;
-  }
-, glibcLocales
-, LC_ALL
-, system ? builtins.currentSystem
-, noDev ? false
-, php ? pkgs.php
-, phpPackages ? pkgs.phpPackages
-}:
+  }, system ? builtins.currentSystem, noDev ? false, php ? pkgs.php, phpPackages ? pkgs.phpPackages}:
 
 let
   composerEnv = import ./composer-env.nix {
@@ -19,4 +12,3 @@ import ./php-packages.nix {
   inherit composerEnv noDev;
   inherit (pkgs) fetchurl fetchgit fetchhg fetchsvn;
 }
-

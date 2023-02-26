@@ -1,4 +1,4 @@
-nixpkgs: { pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 
 with lib;
 
@@ -10,54 +10,41 @@ let
   user = cfg.user;
   group = cfg.group;
 
-  firefly-iii = pkgs.firefly-iii.override {
-    dataDir = cfg.dataDir;
-  };
+  firefly-iii = pkgs.firefly-iii;
 
   defaultUser = "firefly-iii";
   defaultGroup = defaultUser;
 
   tlsEnabled = cfg.nginx.addSSL || cfg.nginx.forceSSL || cfg.nginx.onlySSL || cfg.nginx.enableACME;
 
-  # shell script for local administration
-  artisan = pkgs.writeScriptBin "firefly-iii" ''
-    #! ${pkgs.runtimeShell}
-    cd ${firefly-iii}
-    sudo=exec
-    if [[ "$USER" != ${user} ]]; then
-      sudo='exec /run/wrappers/bin/sudo -u ${user}'
-    fi
-    $sudo ${pkgs.php}/bin/php artisan $*
-  '';
-in
-{
+in {
 
   options.services.firefly-iii = {
 
     enable = mkEnableOption "Firefly III";
 
     dataDir = mkOption {
-      description = "Firefly III data directory";
+      description = mdDoc "Firefly III data directory";
       default = "/var/lib/firefly-iii";
       type = types.path;
     };
 
     # App configuration
     appURL = mkOption {
-      description = ''
+      description = mdDoc ''
         The root URL that you want to host Firefly III on. All URLs in Firefly III will be generated using this value.
       '';
-      default = "http${optionalString tlsEnabled "s"}://${cfg.hostname}";
-      defaultText = ''http''${optionalString tlsEnabled "s"}://''${cfg.hostname}'';
+      default = "http${lib.optionalString tlsEnabled "s"}://${cfg.hostname}";
+      defaultText = ''http''${lib.optionalString tlsEnabled "s"}://''${cfg.hostname}'';
       example = "https://example.com";
       type = types.str;
     };
 
     appKeyFile = mkOption {
-      description = ''
+      description = mdDoc ''
         A file containing the Laravel APP_KEY - a 32 character long,
         base64 encoded key used for encryption where needed. Can be
-        generated with <code>head -c 32 /dev/urandom | base64</code>.
+        generated with `head -c 32 /dev/urandom | base64`.
       '';
       example = "/run/keys/firefly-iii-appkey";
       type = types.path;
@@ -74,36 +61,34 @@ in
         "pm.max_spare_servers" = 4;
         "pm.max_requests" = 500;
       };
-      description = ''
+      description = mdDoc ''
         Options for the Firefly III PHP pool. See the documentation on <literal>php-fpm.conf</literal>
         for details on configuration directives.
       '';
     };
 
     # Reverse proxy
-    hostname = mkOption {
-      type = types.str;
-      default =
-        if config.networking.domain != null then
-          config.networking.fqdn
-        else
-          config.networking.hostName;
-      defaultText = literalExpression "config.networking.fqdn";
+    hostname = lib.mkOption {
+      type = lib.types.str;
+      default = if config.networking.domain != null then
+                  config.networking.fqdn
+                else
+                  config.networking.hostName;
+      defaultText = literalMD "config.networking.fqdn";
       example = "firefly.example.com";
-      description = "The hostname to serve Firefly III on.";
+      description = mdDoc "The hostname to serve Firefly III on.";
     };
 
     nginx = mkOption {
       type = types.submodule (
         recursiveUpdate
-          (import "${nixpkgs}/nixos/modules/services/web-servers/nginx/vhost-options.nix" { inherit config lib; })
-          { }
+          (import ../web-servers/nginx/vhost-options.nix { inherit config lib; }) {}
       );
-      default = { };
-      example = literalExpression ''
+      default = {};
+      example = literalMD ''
         {
           serverAliases = [
-            "firefly.''${config.networking.domain}"
+            "firefly.''${cfg.hostname}"
           ];
 
           # To enable encryption and let Let's Encrypt take care of certificate
@@ -111,7 +96,7 @@ in
           enableACME = true;
         }
       '';
-      description = "With this option, you can customize the nginx virtualHost settings.";
+      description = mdDoc "With this option, you can customize the nginx virtualHost settings.";
     };
 
     # Config
@@ -139,8 +124,8 @@ in
                   };
                 };
               })));
-      default = { };
-      example = literalExpression ''
+      default = {};
+      example = literalMD ''
         {
           MAILGUN_SECRET = { _secret = "/run/keys/mailgun_secret" };
         }
@@ -164,28 +149,28 @@ in
         type = types.enum [ "pgsql" "mysql" "sqlite" ];
         example = "mysql";
         default = "mysql";
-        description = "Database engine to use.";
+        description = mdDoc "Database engine to use.";
       };
       host = mkOption {
         type = types.str;
         default = "localhost";
-        description = "Database host address.";
+        description = mdDoc "Database host address.";
       };
       port = mkOption {
         type = types.port;
         default = 3306;
-        description = "Database host port.";
+        description = mdDoc "Database host port.";
       };
       name = mkOption {
         type = types.str;
         default = "firefly";
-        description = "Database name.";
+        description = mdDoc "Database name.";
       };
       user = mkOption {
         type = types.str;
         default = user;
-        defaultText = literalExpression "user";
-        description = "Database username.";
+        defaultText = literalMD "user";
+        description = mdDoc "Database username.";
       };
       passwordFile = mkOption {
         type = with types; nullOr path;
@@ -199,7 +184,7 @@ in
       createLocally = mkOption {
         type = types.bool;
         default = false;
-        description = "Create the database and database user locally.";
+        description = mdDoc "Create the database and database user locally.";
       };
     };
 
@@ -207,30 +192,28 @@ in
       driver = mkOption {
         type = types.enum [ "smtp" "sendmail" "mandrill" "sparkpost" "log" ];
         default = "log";
-        description = "Mail driver to use.";
+        description = mdDoc "Mail driver to use.";
       };
       host = mkOption {
         type = with types; nullOr str;
-        default = null;
-        description = "Mail host address.";
+        default = "null";
+        description = mdDoc "Mail host address.";
       };
       port = mkOption {
         type = types.port;
         default = 2525;
-        description = "Mail host port.";
+        description = mdDoc "Mail host port.";
       };
-      from = mkOption {
+      fromName = mkOption {
         type = types.str;
-        default = "firefly@${cfg.hostname}";
-        defaultText = ''firefly@''${cfg.hostname}'';
-        example = "firefly@example.com";
-        description = "Mail \"from\" address";
+        default = "Firefly III";
+        description = mdDoc "Mail \"from\" name";
       };
       user = mkOption {
         type = with types; nullOr str;
         default = null;
         example = "firefly-iii";
-        description = "Mail username.";
+        description = mdDoc "Mail username.";
       };
       passwordFile = mkOption {
         type = with types; nullOr path;
@@ -244,20 +227,20 @@ in
       encryption = mkOption {
         type = with types; nullOr (enum [ "tls" ]);
         default = null;
-        description = "SMTP encryption mechanism to use.";
+        description = mdDoc "SMTP encryption mechanism to use.";
       };
     };
 
     # User management
     user = mkOption {
       default = defaultUser;
-      description = "User Firefly III runs as.";
+      description = mdDoc "User Firefly III runs as.";
       type = types.str;
     };
 
     group = mkOption {
       default = defaultGroup;
-      description = "Group Firefly III runs as.";
+      description = mdDoc "Group Firefly III runs as.";
       type = types.str;
     };
 
@@ -275,7 +258,7 @@ in
       }
       {
         assertion = db.createLocally -> db.passwordFile == null;
-        message = "services.firefly-iii.database.passwordFile cannot be specified if services.bookstack.database.createLocally is set true.";
+        message = "services.firefly-iii.database.passwordFile cannot be specified if services.firefly-iii.database.createLocally is set true.";
       }
       {
         assertion = db.createLocally -> db.type == "mysql";
@@ -292,8 +275,8 @@ in
       '';
       settings = {
         "listen.mode" = "0660";
-        "listen.owner" = user;
-        "listen.group" = group;
+        "listen.owner" = "nginx";
+        "listen.group" = "nginx";
       } // cfg.poolConfig;
     };
 
@@ -316,24 +299,21 @@ in
       recommendedTlsSettings = true;
       recommendedOptimisation = true;
       recommendedGzipSettings = true;
-      virtualHosts.${cfg.hostname} = mkMerge [
-        cfg.nginx
-        {
-          root = mkForce "${firefly-iii}/public";
-          locations = {
-            "/" = {
-              index = "index.php";
-              tryFiles = "$uri $uri/ /index.php?$query_string";
-            };
-            "~ \.php$".extraConfig = ''
-              fastcgi_pass unix:${config.services.phpfpm.pools."firefly-iii".socket};
-            '';
-            "~ \.(js|css|gif|png|ico|jpg|jpeg)$" = {
-              extraConfig = "expires 365d;";
-            };
+      virtualHosts.${cfg.hostname} = mkMerge [ cfg.nginx {
+        root = mkForce "${firefly-iii}/public";
+        locations = {
+          "/" = {
+            index = "index.php";
+            tryFiles = "$uri $uri/ /index.php?$query_string";
           };
-        }
-      ];
+          "~ \.php$".extraConfig = ''
+            fastcgi_pass unix:${config.services.phpfpm.pools."firefly-iii".socket};
+          '';
+          "~ \.(js|css|gif|png|ico|jpg|jpeg)$" = {
+            extraConfig = "expires 365d;";
+          };
+        };
+      }];
     };
 
     # Config
@@ -351,17 +331,15 @@ in
       MAIL_MAILER = mail.driver;
       MAIL_HOST = mail.host;
       MAIL_PORT = mail.port;
-      MAIL_FROM = mail.from;
+      MAIL_FROM = mail.fromName;
       MAIL_USERNAME = mail.user;
       MAIL_PASSWORD._secret = mail.passwordFile;
       MAIL_ENCRYPTION = mail.encryption;
     };
 
     # Set-up script
-    environment.systemPackages = [ artisan ];
-
     systemd.services.firefly-iii-setup = {
-      description = "Preparation tasks for Firefly III";
+      description = mdDoc "Preparation tasks for Firefly III";
       before = [ "phpfpm-firefly-iii.service" ];
       after = optional db.createLocally "mysql.service";
       wantedBy = [ "multi-user.target" ];
@@ -369,45 +347,57 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         User = user;
-        WorkingDirectory = firefly-iii;
+        WorkingDirectory = "${firefly-iii}";
       };
       path = [ pkgs.replace-secret ];
       script =
         let
-          isSecret = v: isAttrs v && v ? _secret && (isString v._secret || builtins.isPath v._secret);
-          fireflyEnvVars = generators.toKeyValue {
-            mkKeyValue = flip generators.mkKeyValueDefault "=" {
+          isSecret  = v: isAttrs v && v ? _secret && (isString v._secret || builtins.isPath v._secret);
+          fireflyEnvVars = lib.generators.toKeyValue {
+            mkKeyValue = lib.flip lib.generators.mkKeyValueDefault "=" {
               mkValueString = v: with builtins;
-                if isInt v then toString v
-                else if isString v then v
-                else if true == v then "true"
-                else if false == v then "false"
-                else if isSecret v then hashString "sha256" v._secret
-                else throw "unsupported type ${typeOf v}: ${(generators.toPretty {}) v}";
+                if isInt             v then toString v
+                else if isString     v then "\"${v}\""
+                else if true  ==     v then "true"
+                else if false ==     v then "false"
+                else if isSecret     v then
+                  if (isString v._secret) then
+                    hashString "sha256" v._secret
+                  else
+                    hashString "sha256" (builtins.readFile v._secret)
+                else throw "unsupported type ${typeOf v}: ${(lib.generators.toPretty {}) v}";
             };
           };
-          secretPaths = mapAttrsToList (_: v: v._secret) (filterAttrs (_: isSecret) cfg.config);
+          secretPaths = lib.mapAttrsToList (_: v: v._secret) (lib.filterAttrs (_: isSecret) cfg.config);
           mkSecretReplacement = file: ''
-            replace-secret ${escapeShellArgs [ (builtins.hashString "sha256" file) file "${cfg.dataDir}/.env" ]}
+            replace-secret ${escapeShellArgs [
+              (
+                if (isString file) then
+                  builtins.hashString "sha256" file
+                else
+                  builtins.hashString "sha256" (builtins.readFile file)
+              )
+              file
+              "${cfg.dataDir}/.env"
+            ]}
           '';
-          secretReplacements = concatMapStrings mkSecretReplacement secretPaths;
-          filteredConfig = converge (filterAttrsRecursive (_: v: ! elem v [{ } null])) cfg.config;
+          secretReplacements = lib.concatMapStrings mkSecretReplacement secretPaths;
+          filteredConfig = lib.converge (lib.filterAttrsRecursive (_: v: ! elem v [ {} null ])) cfg.config;
           fireflyEnv = pkgs.writeText "firefly-iii.env" (fireflyEnvVars filteredConfig);
-        in
-        ''
-          set -euo pipefail
-          umask 077
+      in ''
+        set -euo pipefail
+        umask 077
 
-          # create the .env file
-          install -T -m 0600 -o ${user} ${fireflyEnv} "${cfg.dataDir}/.env"
-          ${secretReplacements}
-          if ! grep 'APP_KEY=base64:' "${cfg.dataDir}/.env" >/dev/null; then
-              sed -i 's/APP_KEY=/APP_KEY=base64:/' "${cfg.dataDir}/.env"
-          fi
+        # create the .env file
+        install -T -m 0600 -o ${user} ${fireflyEnv} "${cfg.dataDir}/.env"
+        ${secretReplacements}
+        if ! grep 'APP_KEY=base64:' "${cfg.dataDir}/.env" >/dev/null; then
+            sed -i 's/APP_KEY=/APP_KEY=base64:/' "${cfg.dataDir}/.env"
+        fi
 
-          # migrate db
-          ${pkgs.php}/bin/php artisan migrate --force
-        '';
+        # migrate db
+        ${pkgs.php}/bin/php artisan migrate --force
+      '';
     };
 
     # Data dir
@@ -435,11 +425,10 @@ in
         "${config.services.nginx.user}".extraGroups = [ group ];
       };
       groups = mkIf (group == defaultGroup) {
-        ${defaultGroup} = { };
+        ${defaultGroup} = {};
       };
     };
 
   };
 
-  meta.maintainers = with maintainers; [ eliandoran ];
 }

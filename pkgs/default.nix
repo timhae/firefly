@@ -1,44 +1,27 @@
-{ pkgs
-, stdenv
-, lib
-, src
-, glibcLocales
-, dataDir ? "/var/lib/firefly-iii"
-, LC_ALL ? "en_US.UTF-8"
-}:
-
-{ version
-, src
-}:
+{ pkgs, stdenv, lib, fetchFromGitHub,
+  dataDir ? "/var/lib/firefly-iii" }:
 
 let
   package = (import ./composition.nix {
-    inherit pkgs LC_ALL glibcLocales;
+    inherit pkgs;
     inherit (stdenv.hostPlatform) system;
     noDev = true;
-  }).overrideAttrs (oldAttrs: {
-    installPhase = oldAttrs.installPhase + ''
+  }).overrideAttrs (attrs : {
+    installPhase = attrs.installPhase + ''
       rm -R $out/storage
       ln -s ${dataDir}/storage $out/storage
       ln -s ${dataDir}/.env $out/.env
     '';
   });
 in
-package.override rec {
-  inherit src version;
-  pname = "firefly-iii";
+  package.override rec {
+    pname = "firefly-iii";
+    version = "5.7.18";
 
-  meta = with lib; {
-    description = "A free and open source personal finance manager";
-    longDescription = ''
-      "Firefly III" is a (self-hosted) manager for your personal finances.
-      It can help you keep track of your expenses and income, so you can spend less and save more.
-
-      More information can be found on the official website at https://firefly-iii.org.
-    '';
-    homepage = "https://firefly-iii.org";
-    license = licenses.agpl3Only;
-    maintainers = with maintainers; [ eliandoran ];
-    platforms = platforms.linux;
-  };
-}
+    src = fetchFromGitHub {
+      owner = "firefly-iii";
+      repo = pname;
+      rev = version;
+      sha256 = "0rrcfhmb7rzi4m5sl99gkl2hijdlncpihirk5lw2v8k9fhb90b8a";
+    };
+  }
