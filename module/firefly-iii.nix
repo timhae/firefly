@@ -275,7 +275,7 @@ in
       }
       {
         assertion = db.createLocally -> db.passwordFile == null;
-        message = "services.firefly-iii.database.passwordFile cannot be specified if services.bookstack.database.createLocally is set true.";
+        message = "services.firefly-iii.database.passwordFile cannot be specified if services.firefly-iii.database.createLocally is set true.";
       }
       {
         assertion = db.createLocally -> db.type == "mysql";
