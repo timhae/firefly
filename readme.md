@@ -48,7 +48,7 @@ age.secrets.fireflyAppkey = {
   owner = "firefly-iii";
   group = "nginx";
 };
-environment.etc."firefly-iii/appkey".source = config.age.secrets.fireflyAppkey.path;
+appKeyFile = config.age.secrets.fireflyAppkey.path;
 ```
 
 The appkey is a file containing the Laravel `APP_KEY` - a 32 character long,
