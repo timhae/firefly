@@ -26,7 +26,12 @@
         };
         composer2nix = with final; callPackage (composer2nix-src.outPath + "/default.nix") { };
       };
-      packages = forAllSystems (system: { inherit (nixpkgsFor.${system}) firefly-iii composer2nix; });
+      packages = forAllSystems (system:
+        {
+          inherit (nixpkgsFor.${system}) firefly-iii composer2nix;
+          default = nixpkgsFor.${system}.firefly-iii;
+        }
+      );
       nixosModules.firefly-iii = import ./module/firefly-iii.nix nixpkgs;
       checks = forAllSystems (system:
         self.packages.${system} // import ./checks/firefly-iii.nix { inherit self nixpkgs system; }
