@@ -6,26 +6,37 @@
       url = "github:firefly-iii/firefly-iii/5.7.18";
       flake = false;
     };
+    composer2nix-src = {
+      url = "github:svanderburg/composer2nix";
+      flake = false;
+    };
   };
-  outputs = { self, nixpkgs, firefly-iii-src }:
+  outputs = { self, nixpkgs, firefly-iii-src, composer2nix-src }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ self.overlays.default ]; });
-      version = builtins.substring 0 8 firefly-iii-src.lastModifiedDate;
+      version = builtins.substring 0 8 self.lastModifiedDate;
     in
     {
-      overlays.default = final: _: with final; {
-        firefly-iii = callPackage ./pkgs { } {
+      overlays.default = final: _: {
+        firefly-iii = with final; callPackage ./pkgs/default.nix {
           inherit version;
           src = firefly-iii-src;
         };
+        composer2nix = with final; callPackage (composer2nix-src.outPath + "/default.nix") { };
       };
-      packages = forAllSystems (system: { inherit (nixpkgsFor.${system}) firefly-iii; });
-      defaultPackage = forAllSystems (system: self.packages.${system}.firefly-iii);
+      packages = forAllSystems (system: { inherit (nixpkgsFor.${system}) firefly-iii composer2nix; });
       nixosModules.firefly-iii = import ./module/firefly-iii.nix nixpkgs;
       checks = forAllSystems (system:
         self.packages.${system} // import ./checks/firefly-iii.nix { inherit self nixpkgs system; }
       );
+      devShells = forAllSystems (system: {
+        default = nixpkgsFor.${system}.mkShellNoCC {
+          packages = with nixpkgsFor.${system}; [
+            self.packages.${system}.composer2nix
+          ];
+        };
+      });
     };
 }

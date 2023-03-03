@@ -2,13 +2,10 @@
 , stdenv
 , lib
 , src
+, version
 , glibcLocales
 , dataDir ? "/var/lib/firefly-iii"
 , LC_ALL ? "en_US.UTF-8"
-}:
-
-{ version
-, src
 }:
 
 let
