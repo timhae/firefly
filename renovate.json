@@ -15,6 +15,14 @@
       ],
       "datasourceTemplate": "git-tags",
       "packageNameTemplate": "https://github.com/firefly-iii/firefly-iii.git"
+    },
+    {
+      "fileMatch": ["flake.nix"],
+      "matchStrings": [
+        "\"github:svanderburg\/(?<depName>.*)\/(?<currentValue>.*)\";"
+      ],
+      "datasourceTemplate": "git-tags",
+      "packageNameTemplate": "https://github.com/svanderburg/composer2nix.git"
     }
   ]
 }

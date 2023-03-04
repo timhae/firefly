@@ -3,11 +3,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
     firefly-iii-src = {
-      url = "github:firefly-iii/firefly-iii/5.7.18";
+      url = "github:firefly-iii/firefly-iii/v6.0.0";
       flake = false;
     };
     composer2nix-src = {
-      url = "github:svanderburg/composer2nix";
+      url = "github:svanderburg/composer2nix/v0.0.6";
       flake = false;
     };
   };
@@ -36,10 +36,14 @@
       checks = forAllSystems (system:
         self.packages.${system} // import ./checks/firefly-iii.nix { inherit self nixpkgs system; }
       );
+      formatter = forAllSystems (system: nixpkgsFor.${system}.nixpkgs-fmt);
       devShells = forAllSystems (system: {
         default = nixpkgsFor.${system}.mkShellNoCC {
           packages = with nixpkgsFor.${system}; [
             self.packages.${system}.composer2nix
+            curl
+            jq
+            ripgrep
           ];
         };
       });

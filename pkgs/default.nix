@@ -3,16 +3,16 @@
 , lib
 , src
 , version
-, glibcLocales
 , dataDir ? "/var/lib/firefly-iii"
-, LC_ALL ? "en_US.UTF-8"
 }:
 
 let
   package = (import ./composition.nix {
-    inherit pkgs LC_ALL glibcLocales;
+    inherit pkgs;
     inherit (stdenv.hostPlatform) system;
     noDev = true;
+    php = pkgs.php82;
+    phpPackages = pkgs.php82Packages;
   }).overrideAttrs (oldAttrs: {
     installPhase = oldAttrs.installPhase + ''
       rm -R $out/storage
