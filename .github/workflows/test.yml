@@ -8,7 +8,7 @@ jobs:
   build-and-check:
     strategy:
       matrix:
-        os: [buildjet-2vcpu-ubuntu-2204-arm, ubuntu-20.04]
+        os: [buildjet-2vcpu-ubuntu-2204-arm, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
