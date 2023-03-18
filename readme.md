@@ -63,3 +63,5 @@ nix.settings = {
   trusted-public-keys = [ "timhae-firefly.cachix.org-1:TMexYUvP5SKkeKG11WDbYUVLh/4dqvCqSE/c028sqis=" ];
 };
 ```
+
+Update the lavarel dependencies with `pushd pkgs && nix develop -c ./update.sh && popd`
