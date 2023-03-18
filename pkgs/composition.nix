@@ -1,8 +1,10 @@
-{ pkgs
+{ pkgs ? import <nixpkgs> {
+    inherit system;
+  }
 , system ? builtins.currentSystem
 , noDev ? false
-, php
-, phpPackages
+, php ? pkgs.php
+, phpPackages ? pkgs.phpPackages
 }:
 
 let

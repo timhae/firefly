@@ -28,7 +28,7 @@ curl -LO "$remote_raw/composer.json" && curl -LO "$remote_raw/composer.lock"
 
 # Run composer2nix.
 composer2nix --name "firefly-iii" \
-    --composition=composition.nix
+    --composition=composition.nix \
     --no-dev
 rm composer.json composer.lock
 
