@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# See http://mywiki.wooledge.org/BashFAQ/028
+if [[ $BASH_SOURCE = */* ]]; then
+    pushd -- "${BASH_SOURCE%/*}/" || exit
+fi
+
 # The update script requires composer2nix.
 if ! command -v composer2nix &> /dev/null
 then
@@ -13,7 +18,7 @@ GITHUB_REPO=firefly-iii
 latest_version=$(curl -s --show-error "https://api.github.com/repos/$GITHUB_OWNER/$GITHUB_REPO/releases/latest" | jq -r '.tag_name')
 
 # Determine if we are already at the latest version.
-current_version=$(nix eval -f flake.nix --raw inputs.firefly-iii-src.url | rg -o 'v?\d+\.\d+\.\d+')
+current_version=$(nix eval -f ../flake.nix --raw inputs.firefly-iii-src.url | rg -o 'v?\d+\.\d+\.\d+')
 
 if [[ "$current_version" == "$latest_version" ]]; then
     echo "firefly-iii: already at $current_version"
@@ -28,12 +33,11 @@ curl -LO "$remote_raw/composer.json" && curl -LO "$remote_raw/composer.lock"
 
 # Run composer2nix.
 composer2nix --name "firefly-iii" \
-    --composition=composition.nix \
-    --no-dev
+    --composition=composition.nix
 rm composer.json composer.lock
 
 # Update the version number in flake.nix
-sed -i "s:firefly-iii/firefly-iii/v\?\([0-9]\+\.\?\)\{3\}:firefly-iii/firefly-iii/${latest_version}:" flake.nix
+sed -i "s:firefly-iii/firefly-iii/v\?\([0-9]\+\.\?\)\{3\}:firefly-iii/firefly-iii/${latest_version}:" ../flake.nix
 
 nix fmt
 # Check if the update worked by attempting a build.

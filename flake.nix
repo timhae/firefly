@@ -44,6 +44,8 @@
             curl
             jq
             ripgrep
+            nodePackages.bash-language-server
+            nixpkgs-fmt
           ];
         };
       });
