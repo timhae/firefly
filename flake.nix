@@ -45,6 +45,7 @@
             jq
             ripgrep
             nodePackages.bash-language-server
+            nodePackages.yaml-language-server
             nixpkgs-fmt
           ];
         };
