@@ -190,6 +190,8 @@ let
         ${lib.optionalString (!noDev) (bundleDependencies devPackages)}
         cd ..
 
+        echo "APP_KEY=SomeRandomStringOf32CharsExactly" > .env
+
         # Reconstruct autoload scripts
         # We use the optimize feature because Nix packages cannot change after they have been built
         # Using the dynamic loader for a Nix package is useless since there is nothing to dynamically reload.

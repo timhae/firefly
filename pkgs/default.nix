@@ -17,7 +17,7 @@ let
     installPhase = oldAttrs.installPhase + ''
       rm -R $out/storage
       ln -s ${dataDir}/storage $out/storage
-      ln -s ${dataDir}/.env $out/.env
+      ln -fs ${dataDir}/.env $out/.env
     '';
   });
 in
