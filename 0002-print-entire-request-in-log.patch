@@ -1,0 +1,25 @@
+From b69927741c8eecf8e2d01ca2ec3ed4553c002785 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim=20H=C3=A4ring?= <tim.haering@gmail.com>
+Date: Sat, 4 Nov 2023 16:42:47 +0100
+Subject: [PATCH 2/2] print entire request in log
+
+---
+ app/Support/Authentication/RemoteUserGuard.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/Support/Authentication/RemoteUserGuard.php b/app/Support/Authentication/RemoteUserGuard.php
+index c5ae8198d..57c71a08f 100644
+--- a/app/Support/Authentication/RemoteUserGuard.php
++++ b/app/Support/Authentication/RemoteUserGuard.php
+@@ -84,7 +84,7 @@ public function authenticate(): void
+         }
+ 
+         if (null === $userID || '' === $userID) {
+-            Log::error(sprintf('No user in header "%s".', $header));
++            Log::error(sprintf('No user in header "%s", entire request "%s".', $header, request()->server()));
+             throw new FireflyException('The guard header was unexpectedly empty. See the logs.');
+         }
+ 
+-- 
+2.42.0
+

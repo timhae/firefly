@@ -10,6 +10,9 @@ let
 
   buildZipPackage = { name, src }:
     stdenv.mkDerivation {
+
+      patches = [ ./../0002-print-entire-request-in-log.patch ];
+
       inherit name src;
       nativeBuildInputs = [ unzip ];
       buildCommand = ''
