@@ -3,7 +3,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     firefly-iii-src = {
-      url = "github:firefly-iii/firefly-iii/v6.0.30";
+      url = "github:timhae/firefly-iii/v6.0.30";
       flake = false;
     };
     composer2nix-src = {
