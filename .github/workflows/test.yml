@@ -11,8 +11,8 @@ jobs:
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v20
+      - uses: actions/checkout@v4.1.1
+      - uses: cachix/install-nix-action@v23
         with:
           nix_path: nixpkgs=channel:nixos-22.11
           extra_nix_config: "system-features = nixos-test benchmark big-parallel kvm"

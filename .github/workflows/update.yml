@@ -7,13 +7,13 @@ jobs:
   update-lockfile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v20
+      - uses: actions/checkout@v4.1.1
+      - uses: cachix/install-nix-action@v23
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
       - run: nix flake update
-      - uses: peter-evans/create-pull-request@v5
+      - uses: peter-evans/create-pull-request@v5.0.2
         with:
           commit-message: "chore(deps): update flake inputs"
           title: "chore(deps): update flake inputs"
@@ -23,7 +23,7 @@ jobs:
   update-actions:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.1
         with:
           # [Required] Access token with `workflow` scope.
           token: ${{ secrets.WORKFLOW_SECRET }}
