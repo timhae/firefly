@@ -12,6 +12,11 @@ Add as flake input to use the module:
       system = "x86_64-linux";
       modules = [
         firefly.nixosModules.firefly-iii
+        {
+          nixpkgs.overlays = [
+            firefly.overlays.default
+          ];
+        }
       ];
     };
   };
