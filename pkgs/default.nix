@@ -11,8 +11,8 @@ let
     inherit pkgs;
     inherit (stdenv.hostPlatform) system;
     noDev = true;
-    php = pkgs.php82;
-    phpPackages = pkgs.php82Packages;
+    php = pkgs.php83;
+    phpPackages = pkgs.php83Packages;
   }).overrideAttrs (oldAttrs: {
     installPhase = oldAttrs.installPhase + ''
       rm -R $out/storage
