@@ -20,16 +20,16 @@
     "firefly-iii-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1698510073,
-        "narHash": "sha256-h4JFDwYM+xcN+Saqcae8xgV9D8H0mio+w4I2leAQgkE=",
+        "lastModified": 1703587036,
+        "narHash": "sha256-pcT1Ls5fwmv5nMqFpMksl8drvlRWmBv7+xm6f++H1Qw=",
         "owner": "firefly-iii",
         "repo": "firefly-iii",
-        "rev": "4d7909e23d591f5bfc4650922b940492232df937",
+        "rev": "a391d731ff3cbb8824cd098a4eb0f4458007ca8e",
         "type": "github"
       },
       "original": {
         "owner": "firefly-iii",
-        "ref": "v6.0.30",
+        "ref": "v6.1.1",
         "repo": "firefly-iii",
         "type": "github"
       }

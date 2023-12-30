@@ -27,7 +27,7 @@ let
     if [[ "$USER" != ${user} ]]; then
       sudo='exec /run/wrappers/bin/sudo -u ${user}'
     fi
-    $sudo ${pkgs.php82}/bin/php artisan $*
+    $sudo ${pkgs.php83}/bin/php artisan $*
   '';
 in
 {
@@ -287,7 +287,7 @@ in
     services.phpfpm.pools.firefly-iii = {
       inherit user;
       inherit group;
-      phpPackage = pkgs.php82;
+      phpPackage = pkgs.php83;
       phpOptions = ''
         log_errors = on
       '';
@@ -407,7 +407,7 @@ in
           fi
 
           # migrate db
-          ${pkgs.php82}/bin/php artisan migrate --force
+          ${pkgs.php83}/bin/php artisan migrate --force
         '';
     };
 
