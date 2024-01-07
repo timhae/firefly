@@ -20,27 +20,27 @@
     "firefly-iii-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1703587036,
-        "narHash": "sha256-pcT1Ls5fwmv5nMqFpMksl8drvlRWmBv7+xm6f++H1Qw=",
+        "lastModified": 1704536021,
+        "narHash": "sha256-7V9HXyHPEa7j0BhJHKw3ar6BduxmKPW8ZiL5YpEXxtg=",
         "owner": "firefly-iii",
         "repo": "firefly-iii",
-        "rev": "a391d731ff3cbb8824cd098a4eb0f4458007ca8e",
+        "rev": "2c3f032a2b0fa0dc8afa3efc871790af2d5aa8ed",
         "type": "github"
       },
       "original": {
         "owner": "firefly-iii",
-        "ref": "v6.1.1",
+        "ref": "v6.1.6",
         "repo": "firefly-iii",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1703068421,
-        "narHash": "sha256-WSw5Faqlw75McIflnl5v7qVD/B3S2sLh+968bpOGrWA=",
+        "lastModified": 1704420045,
+        "narHash": "sha256-C36QmoJd5tdQ5R9MC1jM7fBkZW9zBUqbUCsgwS6j4QU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d65bceaee0fb1e64363f7871bc43dc1c6ecad99f",
+        "rev": "c1be43e8e837b8dbee2b3665a007e761680f0c3d",
         "type": "github"
       },
       "original": {
