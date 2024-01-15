@@ -433,6 +433,7 @@ in
           inherit group;
           isSystemUser = true;
         };
+      } // mkIf config.services.nginx.enable {
         "${config.services.nginx.user}".extraGroups = [ group ];
       };
       groups = mkIf (group == defaultGroup) {
