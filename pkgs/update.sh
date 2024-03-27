@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 # See http://mywiki.wooledge.org/BashFAQ/028
 if [[ $BASH_SOURCE = */* ]]; then
     pushd -- "${BASH_SOURCE%/*}/" || exit
@@ -36,11 +38,20 @@ composer2nix --name "firefly-iii" \
     --composition=composition.nix
 rm composer.json composer.lock
 
+# Understanding that this comment is a design detail of composer2nix, the code
+# should be robust to the case where the comment is not present.
+sed_str="s:# Reconstruct autoload scripts:echo 'APP_KEY=SomeRandomStringOf32CharsExactly' > .env\\n\\n        # Reconstruct autoload scripts:"
+if sed -i "${sed_str}" composer-env.nix; then
+   echo "Patched composer-env.nix successfully"
+else
+    echo "Could not patch composer-env.nix. It is possible you will get an error related to APP_KEY."
+fi
+
 # Update the version number in flake.nix
 sed -i "s:firefly-iii/firefly-iii/v\?\([0-9]\+\.\?\)\{3\}:firefly-iii/firefly-iii/${latest_version}:" ../flake.nix
 
 nix fmt
 # Check if the update worked by attempting a build.
-nix build .#firefly-iii
+nix build .#firefly-iii --print-build-logs
 nix flake check
 exit $?
