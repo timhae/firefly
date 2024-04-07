@@ -396,7 +396,7 @@ in
           fireflyEnv = pkgs.writeText "firefly-iii.env" (fireflyEnvVars filteredConfig);
         in
         ''
-          set -euo pipefail
+          set -exuo pipefail
           umask 077
 
           # create the .env file
@@ -428,13 +428,19 @@ in
 
     # User management
     users = {
-      users = mkIf (user == defaultUser) {
-        ${defaultUser} = {
-          inherit group;
-          isSystemUser = true;
-        };
-        "${config.services.nginx.user}".extraGroups = [ group ];
-      };
+      users = mkMerge [
+        (mkIf (user == defaultUser) (
+          {
+            ${defaultUser} = {
+              inherit group;
+              isSystemUser = true;
+            };
+          }
+        ))
+        (mkIf config.services.nginx.enable {
+            "${config.services.nginx.user}".extraGroups = [ group ];
+        })
+      ];
       groups = mkIf (group == defaultGroup) {
         ${defaultGroup} = { };
       };
