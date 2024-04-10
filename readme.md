@@ -56,8 +56,8 @@ age.secrets.fireflyAppkey = {
 appKeyFile = config.age.secrets.fireflyAppkey.path;
 ```
 
-The appkey is a file containing the Laravel `APP_KEY` - a 32 character long,
-base64 encoded key used for encryption where needed. Can be generated with
+The appkey is a file containing the Laravel `APP_KEY` - a 32 character long key
+used for encryption where needed. Can be generated with
 `head /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9' | head -c 32 && echo`
 
 There is also a cachix cache:

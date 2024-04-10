@@ -8,7 +8,7 @@
         nixpkgs.overlays = [ self.overlays.default ];
         environment = {
           etc = {
-            "firefly-iii/appkey".text = "IHzCAm6JunrQzaCK+Qa3K4F3ISv/vxMqVEmUIQ2Wxdw=";
+            "firefly-iii/appkey".text = "uUUubZl9CNoqC6IrrnNXd1QC31LHfHnn";
           };
         };
         services.firefly-iii = {
@@ -19,6 +19,7 @@
       };
       testScript = ''
         server.start()
+        server.wait_for_unit("firefly-iii-setup.service")
         server.wait_for_unit("phpfpm-firefly-iii.service")
         server.wait_for_open_port(80)
         server.succeed("curl --fail http://127.0.0.1:80/install 2> /dev/null | grep 'Firefly III'")

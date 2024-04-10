@@ -55,9 +55,9 @@ in
 
     appKeyFile = mkOption {
       description = ''
-        A file containing the Laravel APP_KEY - a 32 character long,
-        base64 encoded key used for encryption where needed. Can be
-        generated with <code>head -c 32 /dev/urandom | base64</code>.
+        A file containing the Laravel APP_KEY - a 32 character long
+        key used for encryption where needed. Can be generated with <code>head
+        /dev/urandom | LC_ALL=C tr -dc 'A-Za-z0-9' | head -c 32 && echo</code>.
       '';
       example = "/run/keys/firefly-iii-appkey";
       type = types.path;
@@ -402,9 +402,6 @@ in
           # create the .env file
           install -T -m 0600 -o ${user} ${fireflyEnv} "${cfg.dataDir}/.env"
           ${secretReplacements}
-          if ! grep 'APP_KEY=base64:' "${cfg.dataDir}/.env" >/dev/null; then
-              sed -i 's/APP_KEY=/APP_KEY=base64:/' "${cfg.dataDir}/.env"
-          fi
 
           # migrate db
           ${pkgs.php83}/bin/php artisan migrate --force
@@ -438,7 +435,7 @@ in
           }
         ))
         (mkIf config.services.nginx.enable {
-            "${config.services.nginx.user}".extraGroups = [ group ];
+          "${config.services.nginx.user}".extraGroups = [ group ];
         })
       ];
       groups = mkIf (group == defaultGroup) {
