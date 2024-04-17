@@ -13,7 +13,7 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
       - run: nix flake update
-      - uses: peter-evans/create-pull-request@v6.0.2
+      - uses: peter-evans/create-pull-request@v6.0.3
         with:
           commit-message: "chore(deps): update flake inputs"
           title: "chore(deps): update flake inputs"
